@@ -116,3 +116,53 @@ if this JID is not present in the room - MUC filter MUST be disabled.
 - *Modified Stanza/Presence/Message* - a stanza was processed by the Filter JID. 
 - *Sender* - 'from' attribute value of a modified or an original stanza.
 - *Recipient* - 'to' attribute value of a modified or an original stanza.
+
+
+## Business Rules
+
+1. A MUC service MUST keep the original stanza and the 'id' attribute of each MUC Filter query for processing the result by its ID. 
+
+2. The type of a modified stanza MUST be the same type of the original.  
+
+3. A modified stanza SHOULD have the same original stanza ID.
+
+4. A result MUST not be reflected to the room if the occupant (sender or recipient) is no longer present in it. 
+
+5. Either the bare JID of sender or recipient of a modified stanza MUST be equal to the Room JID (as original or switched).
+
+6. A modified presence with a switched sender/recipient - if the recipient is non-occupant - the recipient MUST be the sender of the original stanza.
+
+7. A modified message with a switched sender/recipient - the recipient MUST be an occupant. 
+
+8. A modified stanza with a switched sender/recipient SHOULD be used for errors or warnings (mute messages). 
+
+9. A MUC service MUST not pass presence of type "unavailable" to the Filter JID.
+
+10. A MUC service MUST not reflect a result of a stanza with an sender its bare JID is not a room  JID (read rule number 5) if some conditions aren't met:
+
+* Sender is an occupant:
+ - a modified message of type "chat":
+    - recipient is an occupant JID. <room@service/nick>
+    - occupant JID can be found in the room. 
+ - a modified message of type "groupchat":
+    - recipient is the room JID room@service. 
+ - a modified presence of type " "
+    - recipient is an occupant JID. 
+    - the service is able to update a user presence.
+
+* Sender is NOT an occupant:
+ - a modified presence of type " "
+    - recipient is an occupant JID. 
+    - nickname is not already in use by another occupant 
+    - this sender JID is the sender of the original presence. 
+    - the service is able to add a new user. 
+
+A MUC service should query MUC Filter when:
+---
+
+1. A message stanza with body. 
+2. A message stanza of type "chat" - if the service allows the user to send private messages. 
+3. A message stanza of type "groupchat" - if the service allows the user to send groupchat messages.  
+4. User entering a room - if the service is able to add the user to the room. 
+5. Presence changes of an occupant except for presence of type "unavailable". 
+6. User affiliation is "None" and with excluding the Filter JID. 
