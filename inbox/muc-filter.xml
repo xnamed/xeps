@@ -109,3 +109,10 @@ if this JID is not present in the room - MUC filter MUST be disabled.
 
 - the result is transferred to the conference after processing. 
 - the result may not return to the conference.
+
+## Terminology
+
+- *Filter JID* - the full JID of the filtering bot which set in the "muc#roomconfig_filterjid" room configuration field. 
+- *Modified Stanza/Presence/Message* - a stanza was processed by the Filter JID. 
+- *Sender* - 'from' attribute value of a modified or an original stanza.
+- *Recipient* - 'to' attribute value of a modified or an original stanza.
