@@ -1,0 +1,68 @@
+# MUC Filter
+
+## MUC Configuration
+
+in the room configuration the "muc#roomconfig_filterjid" field is added.
+
+
+* Example - Owner Requests Configuration Form
+
+```xml
+<iq from='crone1@shakespeare.lit/desktop'
+    id='config1'
+    to='coven@chat.shakespeare.lit'
+    type='get'>
+  <query xmlns='http://jabber.org/protocol/muc#owner'/>
+</iq>
+```
+
+* Example - Service Sends Configuration Form to Owner
+
+```xml
+<iq from='coven@chat.shakespeare.lit'
+    id='create1'
+    to='crone1@shakespeare.lit/desktop'
+    type='result'>
+  <query xmlns='http://jabber.org/protocol/muc#owner'>
+    <x xmlns='jabber:x:data' type='form'>
+      <field type='hidden' var='FORM_TYPE'>
+        <value>http://jabber.org/protocol/muc#roomconfig</value>
+      </field>
+      ...
+      <field
+          label='Filter messages from unaffiliated users through Jabber ID'
+          type='text-single'
+          var='muc#roomconfig_filterjid'>
+        <value></value>
+      </field>
+      ...
+    </x>
+  </query>
+</iq>
+```
+
+the full JID of the filtering bot MUST be entered in the "muc#roomconfig_filterjid" field.
+
+if this JID is not present in the room - MUC filter MUST be disabled.
+
+* Example - MUC Owner Submits Configuration Form
+
+```xml
+<iq from='coven@chat.shakespeare.lit'
+    id='configure1'
+    to='crone1@shakespeare.lit/desktop'
+    type='set'>
+  <query xmlns='http://jabber.org/protocol/muc#owner'>
+    <x xmlns='jabber:x:data' type='submit'>
+      <field type='hidden' var='FORM_TYPE'>
+        <value>http://jabber.org/protocol/muc#roomconfig</value>
+      </field>
+      ...
+      <field var='muc#roomconfig_filterjid'>
+        <value>filterbot@example.com/robot</value>
+      </field>
+      ...
+    </x>
+  </query>
+</iq>
+```
