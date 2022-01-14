@@ -66,3 +66,46 @@ if this JID is not present in the room - MUC filter MUST be disabled.
   </query>
 </iq>
 ```
+
+## Principle of Operation
+
+- if the filter JID is present in the room, then all messages and presences from participants with affiliation none are passed to the filter JID:
+
+- Example: Service MUC Filter query / Message:
+
+```xml
+        <iq from='room@muc.example.com' id='filter1' to='filterbot@example.com/robot' type='set'>
+           <query xmlns='urn:xmpp:muc-filter'>
+               <message>...</message> # Original stanza with message
+           </query>
+       </iq>
+```
+
+- Example: Filter JID returns MUC-Filter query result:
+
+       <iq from='filterbot@example.com/robot' id='filter1' to='room@muc.example.com' type='result'>
+           <query xmlns='urn:xmpp:muc-filter'>
+               <message>...</message> # Modified stanza with a message
+           </query>
+       </iq>
+
+- Example: Service MUC Filter query / Presence:
+
+      <iq from='room@muc.example.com' id='filter2' to='filterbot@example.com/robot' type='set'>
+           <query xmlns='urn:xmpp:muc-filter'>
+               <presence>...</presence> # Original stanza with a presence
+           </query>
+       </iq>
+
+- Example: Filter JID returns MUC-Filter query result:
+
+```xml
+<iq from='filterbot@example.com/robot' to='room@muc.example.com' type='result' id='filter2'>
+           <query xmlns='urn:xmpp:muc-filter'>
+               <presence>...</presence> # Modified stanza with presence
+           </query>
+       </iq>
+```
+
+- the result is transferred to the conference after processing. 
+- the result may not return to the conference.
